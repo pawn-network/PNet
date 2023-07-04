@@ -2,7 +2,7 @@ import socket
 import threading
 import pnpacket
 
-class PNetServer:
+class PNServer:
     def __init__(self, host, port):
         self.port = port
         self.host = host
@@ -14,8 +14,8 @@ class PNetServer:
         while True and self.shutdown is False:
             packet, client = self.sock_fd.recvfrom(1024) 
             if packet is not None:
-                pnPkt = pnpacket.PNPacket.resolvePacket(packet)
-                callback(pnPkt, client, kwargs)
+                pnPkt = pnpacket.PNPacket.fromStr(packet.decode())
+                callback(pnPkt, client, **kwargs)
     
     def shutdown(self):
         self.shutdown = True
@@ -25,6 +25,6 @@ class PNetServer:
             self.shutdown = False
         if self.listening is False:
             self.sock_fd.bind((self.host, self.port))
-            thread = threading.Thread(target=self.thread_listener, args=(callback,), kwargs=kwargs)
+            thread = threading.Thread(target=self.thread_listener, args=(callback,), kwargs=(kwargs))
             thread.start()
             self.listening = True
