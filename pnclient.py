@@ -3,10 +3,10 @@ from pnpacket import PNPacket
 
 class PNClient:
     def __init__(self, host, port):
-        self.host = host
-        self.port = port
-        self.sock_fd = socket(AF_INET, SOCK_DGRAM)
+        self._host = host
+        self._port = port
+        self._sock_fd = socket(AF_INET, SOCK_DGRAM)
 
     def send(self, pnPacket: PNPacket):
         strPkt = pnPacket.stringfy()
-        self.sock_fd.sendto(strPkt.encode(), (self.host, self.port))
+        self._sock_fd.sendto(strPkt.encode(), (self._host, self._port))

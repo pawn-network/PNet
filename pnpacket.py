@@ -2,26 +2,34 @@ import json
 
 class PNPacket:
     def __init__(self, packetId, JSON=None, useJSON=False, **kwargs):
-        self.packetId = packetId
-        self.jData: dict = {}
+        self._packetId = packetId
+        self._packetIdjData: dict = {}
         if useJSON:
-            self.jData = JSON
+            self._jData = JSON
         else:
             for k, v in kwargs.items():
-                self.jData[k] = v
+                self._jData[k] = v
 
     @classmethod
     def fromStr(cls, string):
         jsonData: dict = json.loads(string)
         pktId = jsonData.get('packetId')
+        print(pktId)
         jsonData.pop('packetId', None)
         return cls(pktId, jsonData, True)
 
-    def getPacketId(self):
-        return self.packetId
+    @property
+    def getPacketId(self) -> int:
+        return self._packetId
     
-    def getJSONData(self):
-        return self.jData
-
-    def stringfy(self):
-        return json.dumps(self.jData)
+    @property
+    def getJSONData(self) -> dict | None:
+        return self._jData
+    
+    @property
+    def stringfy(self) -> str:
+        JSONData = self._jData
+        JSONData['packetId'] = self.getPacketId()
+        return json.dumps(self._jData)
+    
+PACKET_ID_SHUTDOWN = 1

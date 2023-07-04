@@ -4,27 +4,31 @@ import pnpacket
 
 class PNServer:
     def __init__(self, host, port):
-        self.port = port
-        self.host = host
-        self.sock_fd = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.shutdown = False
-        self.listening = False
+        self._port = port
+        self._host = host
+        self._sock_fd = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self._shutdown = False
+        self._listening = False
+        self._threadId = None
 
     def thread_listener(self, callback=None, **kwargs):
-        while True and self.shutdown is False:
-            packet, client = self.sock_fd.recvfrom(1024) 
+        while True:
+            if self._shutdown:
+                break
+            packet, client = self._sock_fd.recvfrom(1024) 
             if packet is not None:
                 pnPkt = pnpacket.PNPacket.fromStr(packet.decode())
                 callback(pnPkt, client, **kwargs)
     
     def shutdown(self):
-        self.shutdown = True
+        self._shutdown = True
 
     def listen(self, callback=None, **kwargs):
-        if self.shutdown is True:
-            self.shutdown = False
-        if self.listening is False:
-            self.sock_fd.bind((self.host, self.port))
+        if self._shutdown:
+            self._shutdown = False
+        if self._listening is False:
+            self._sock_fd.bind((self._host, self._port))
             thread = threading.Thread(target=self.thread_listener, args=(callback,), kwargs=(kwargs))
             thread.start()
-            self.listening = True
+            self._threadId = thread
+            self._listening = True
