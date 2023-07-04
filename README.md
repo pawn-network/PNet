@@ -1,3 +1,3 @@
 # PNet
 
-    Não usar, esta em fase de desenvolvimento
+    Em breve, tutorial de uso.
