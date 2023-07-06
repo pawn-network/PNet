@@ -1,6 +1,7 @@
 from socket import socket, AF_INET, SOCK_DGRAM
 from pnpacket import PNPacket
 
+
 class PNClient:
     def __init__(self, host, port):
         self._host = host
