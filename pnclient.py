@@ -1,5 +1,5 @@
 from socket import socket, AF_INET, SOCK_DGRAM
-from pnpacket import PNPacket
+from . import pnpacket
 
 
 class PNClient:
@@ -8,6 +8,6 @@ class PNClient:
         self._port = port
         self._sock_fd = socket(AF_INET, SOCK_DGRAM)
 
-    def send(self, pnPacket: PNPacket):
+    def send(self, pnPacket: pnpacket.PNPacket):
         strPkt = pnPacket.stringfy()
         self._sock_fd.sendto(strPkt.encode(), (self._host, self._port))

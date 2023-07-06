@@ -1,13 +1,13 @@
-import socket
-import threading
-import pnpacket
+from socket import socket, AF_INET, SOCK_DGRAM
+from threading import Thread
+from . import pnpacket
 
 
 class PNServer:
     def __init__(self, host, port):
         self._port = port
         self._host = host
-        self._sock_fd = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self._sock_fd = socket(AF_INET, SOCK_DGRAM)
         self._shutdown = False
         self._listening = False
         self._threadId = None
@@ -29,7 +29,7 @@ class PNServer:
             self._shutdown = False
         if self._listening is False:
             self._sock_fd.bind((self._host, self._port))
-            thread = threading.Thread(
+            thread = Thread(
                 target=self.thread_listener, args=(callback,), kwargs=(kwargs)
             )
             thread.start()
